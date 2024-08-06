@@ -6,10 +6,12 @@ class CustomPinInput extends StatelessWidget {
     super.key,
     required this.controller,
     this.focusNode,
+    this.onCompleted,
   });
 
   final TextEditingController controller;
   final FocusNode? focusNode;
+  final VoidCallback? onCompleted;
   final _focusedBorderColor = const Color.fromRGBO(23, 171, 144, 1);
   final _fillColor = const Color.fromRGBO(243, 246, 249, 0);
   final _borderColor = const Color.fromRGBO(23, 171, 144, 0.4);
@@ -38,6 +40,7 @@ class CustomPinInput extends StatelessWidget {
       hapticFeedbackType: HapticFeedbackType.lightImpact,
       onCompleted: (pin) {
         debugPrint('onCompleted: $pin');
+        if (onCompleted != null) onCompleted!();
       },
       onChanged: (value) {
         debugPrint('onChanged: $value');

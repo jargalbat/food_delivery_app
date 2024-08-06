@@ -4,6 +4,8 @@ import 'package:food_delivery_app/modules/signup/bloc/signup_bloc.dart';
 import 'package:food_delivery_app/modules/signup/bloc/signup_event.dart';
 import 'package:food_delivery_app/modules/signup/bloc/signup_state.dart';
 import 'package:food_delivery_app/shared/constants.dart';
+import 'package:food_delivery_app/shared/utils.dart';
+import 'package:food_delivery_app/shared/widgets/custom_elevated_button.dart';
 import 'package:food_delivery_app/shared/widgets/custom_textfield.dart';
 import 'package:go_router/go_router.dart';
 
@@ -21,27 +23,38 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => SignupBloc(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Бүртгүүлэх'),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              context.pop();
-            },
+      child: GestureDetector(
+        onTap: () => Utils.hideKeyboard(context),
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Бүртгүүлэх'),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                context.pop();
+              },
+            ),
           ),
-        ),
-        body: Padding(
-          padding: kScreenPadding,
-          child: Column(
-            children: [
-              // Phone
-              _phoneTextField(),
-              kHeightMedium,
+          body: Padding(
+            padding: kScreenPadding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Утасны дугаараа оруулна уу.',
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                ),
+                kHeightMedium,
 
-              // Next
-              _nextButton(),
-            ],
+                // Phone
+                _phoneTextField(),
+                kHeightMedium,
+
+                // Next
+                _nextButton(),
+              ],
+            ),
           ),
         ),
       ),
@@ -73,17 +86,15 @@ class _SignupScreenState extends State<SignupScreen> {
       listener: _listener,
       child: BlocBuilder<SignupBloc, SignupState>(
         builder: (context, state) {
-          if (state is SignupLoading) {
-            return const CircularProgressIndicator();
-          }
-
-          return ElevatedButton(
+          return CustomElevatedButton(
             onPressed: () {
+              Utils.hideKeyboard(context);
               context.read<SignupBloc>().add(
                     PhoneNumberSubmitted(_phoneController.text),
                   );
             },
-            child: const Text('Үргэлжлүүлэх'),
+            text: 'Үргэлжлүүлэх',
+            isLoading: state is SignupLoading,
           );
         },
       ),

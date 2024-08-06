@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 final ThemeData customTheme = ThemeData(
-  primarySwatch: Colors.blue,
+  primarySwatch: Colors.green,
   appBarTheme: AppBarTheme(
-    backgroundColor: Colors.blue.shade800,
+    backgroundColor: Colors.green.shade800,
     foregroundColor: Colors.white,
     elevation: 4.0,
     centerTitle: true,
@@ -20,8 +20,22 @@ final ThemeData customTheme = ThemeData(
     ),
   ),
   buttonTheme: ButtonThemeData(
-    buttonColor: Colors.blue.shade600,
+    buttonColor: Colors.green.shade600,
     textTheme: ButtonTextTheme.primary,
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.green,
+      // Background color
+      foregroundColor: Colors.white,
+      // Text color
+      elevation: 8,
+      // Elevation
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    ),
   ),
   inputDecorationTheme: InputDecorationTheme(
     border: OutlineInputBorder(
@@ -39,7 +53,7 @@ final ThemeData customTheme = ThemeData(
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(12.0),
       borderSide: BorderSide(
-        color: Colors.blue.shade700,
+        color: Colors.green.shade700,
       ),
     ),
     labelStyle: TextStyle(
@@ -58,10 +72,22 @@ final ThemeData customTheme = ThemeData(
       color: Colors.grey.shade800,
     ),
     titleMedium: TextStyle(
-      color: Colors.blue.shade700,
+      color: Colors.green.shade700,
     ),
     titleSmall: TextStyle(
-      color: Colors.blue.shade700,
+      color: Colors.green.shade700,
+    ),
+  ),
+  snackBarTheme: SnackBarThemeData(
+    backgroundColor: Colors.green.shade800,
+    contentTextStyle: const TextStyle(
+      color: Colors.white,
+      fontSize: 16.0,
+    ),
+    actionTextColor: Colors.green.shade200,
+    behavior: SnackBarBehavior.floating,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8.0),
     ),
   ),
 );

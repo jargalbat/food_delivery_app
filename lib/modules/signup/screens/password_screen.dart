@@ -4,6 +4,8 @@ import 'package:food_delivery_app/modules/signup/bloc/signup_bloc.dart';
 import 'package:food_delivery_app/modules/signup/bloc/signup_event.dart';
 import 'package:food_delivery_app/modules/signup/bloc/signup_state.dart';
 import 'package:food_delivery_app/shared/constants.dart';
+import 'package:food_delivery_app/shared/utils.dart';
+import 'package:food_delivery_app/shared/widgets/custom_elevated_button.dart';
 import 'package:food_delivery_app/shared/widgets/custom_textfield.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,31 +24,37 @@ class _PasswordScreenState extends State<PasswordScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => SignupBloc(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Нууц үг'),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              context.pop();
-            },
+      child: GestureDetector(
+        onTap: () => Utils.hideKeyboard(context),
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Нууц үг'),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                context.pop();
+              },
+            ),
           ),
-        ),
-        body: Padding(
-          padding: kScreenPadding,
-          child: Column(
-            children: [
-              // Pass 1
-              _pass1TextField(),
-              kHeightSmall,
+          body: Padding(
+            padding: kScreenPadding,
+            child: Column(
+              children: [
+                const Text('Шинэ нууц үгээ оруулна уу.'),
+                kHeightMedium,
 
-              // Pass 2
-              _pass2TextField(),
-              kHeightMedium,
+                // Pass 1
+                _pass1TextField(),
+                kHeightSmall,
 
-              // Next
-              _nextButton(),
-            ],
+                // Pass 2
+                _pass2TextField(),
+                kHeightMedium,
+
+                // Next
+                _nextButton(),
+              ],
+            ),
           ),
         ),
       ),
@@ -56,7 +64,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
   void _listener(BuildContext context, SignupState state) {
     if (state is PasswordSubmittedSuccess) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Амжилттай бүртгүүллээ')),
+        const SnackBar(content: Text('Бүртгэл амжилттай үүслээ')),
       );
 
       context.go('/');
@@ -94,12 +102,9 @@ class _PasswordScreenState extends State<PasswordScreen> {
       listener: _listener,
       child: BlocBuilder<SignupBloc, SignupState>(
         builder: (context, state) {
-          if (state is SignupLoading) {
-            return const CircularProgressIndicator();
-          }
-
-          return ElevatedButton(
+          return CustomElevatedButton(
             onPressed: () {
+              Utils.hideKeyboard(context);
               context.read<SignupBloc>().add(
                     PasswordSubmitted(
                       _pass1Controller.text,
@@ -107,7 +112,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
                     ),
                   );
             },
-            child: const Text('Үргэлжлүүлэх'),
+            text: 'Үргэлжлүүлэх',
+            isLoading: state is SignupLoading,
           );
         },
       ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_delivery_app/shared/constants.dart';
+import 'package:food_delivery_app/shared/utils.dart';
+import 'package:food_delivery_app/shared/widgets/custom_elevated_button.dart';
 import 'package:food_delivery_app/shared/widgets/custom_textfield.dart';
 import 'package:go_router/go_router.dart';
 import '../bloc/auth_bloc.dart';
@@ -15,36 +17,57 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _phoneFocus = FocusNode();
+  final _passwordFocus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _phoneFocus.unfocus();
+      _passwordFocus.unfocus();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AuthBloc(),
-      child: Scaffold(
-        body: Padding(
-          padding: kScreenPadding,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Logo
-              _logo(),
-              kHeightMedium,
+      child: GestureDetector(
+        onTap: () => Utils.hideKeyboard(context),
+        child: Scaffold(
+          body: SingleChildScrollView(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Padding(
+                padding: kScreenPadding,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 100.0),
 
-              // Phone
-              _phoneTextField(),
-              kHeightSmall,
+                    // Logo
+                    _logo(),
+                    kHeightMedium,
 
-              // Pass
-              _passwordTextField(),
-              kHeightMedium,
+                    // Phone
+                    _phoneTextField(),
+                    kHeightSmall,
 
-              // Login
-              _loginButton(),
-              kHeightSmall,
+                    // Pass
+                    _passwordTextField(),
+                    kHeightMedium,
 
-              // Signup
-              _signupButton(),
-            ],
+                    // Login
+                    _loginButton(),
+                    kHeightSmall,
+
+                    // Signup
+                    _signupButton(),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -65,8 +88,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return Center(
       child: Image.asset(
         'assets/images/logo.png',
-        width: 200.0,
-        height: 200.0,
+        width: 150.0,
+        height: 150.0,
       ),
     );
   }
@@ -74,6 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _phoneTextField() {
     return CustomTextField(
       controller: _phoneController,
+      focusNode: _phoneFocus,
       labelText: 'Утасны дугаар',
       keyboardType: TextInputType.phone,
       maxLength: 8,
@@ -84,6 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _passwordTextField() {
     return CustomTextField(
       controller: _passwordController,
+      focusNode: _passwordFocus,
       labelText: 'Нууц үг',
       maxLength: 30,
       obscureText: true,
@@ -96,12 +121,10 @@ class _LoginScreenState extends State<LoginScreen> {
       listener: _listener,
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
-          if (state is AuthLoading) {
-            return const CircularProgressIndicator();
-          }
-
-          return ElevatedButton(
+          return CustomElevatedButton(
             onPressed: () {
+              Utils.hideKeyboard(context);
+
               context.read<AuthBloc>().add(
                     LoginEvent(
                       phoneNumber: _phoneController.text,
@@ -109,7 +132,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   );
             },
-            child: const Text('Нэвтрэх'),
+            text: 'Нэвтрэх',
+            isLoading: state is AuthLoading,
           );
         },
       ),
@@ -119,9 +143,25 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _signupButton() {
     return TextButton(
       onPressed: () {
+        Utils.hideKeyboard(context);
+        _clearData();
         context.push('/signup');
       },
       child: const Text('Бүртгүүлэх'),
     );
+  }
+
+  void _clearData() {
+    _phoneController.clear();
+    _passwordController.clear();
+  }
+
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    _passwordController.dispose();
+    _phoneFocus.dispose();
+    _passwordFocus.dispose();
+    super.dispose();
   }
 }

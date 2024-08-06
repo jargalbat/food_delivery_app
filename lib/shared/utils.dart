@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class Utils {
   static String? validatePhoneNumber(String? value) {
     final regex = RegExp(r'^\d{8}$');
@@ -24,5 +26,9 @@ class Utils {
       return 'Нууц үгээ оруулна уу';
     }
     return null;
+  }
+
+  static void hideKeyboard(BuildContext context) {
+    FocusScope.of(context).unfocus();
   }
 }
