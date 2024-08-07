@@ -35,37 +35,45 @@ class _SearchViewState extends State<SearchView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchBloc, SearchState>(
-      builder: (context, state) {
-        if (state is SearchInitial ||
-            state is SearchLoading && state is! SearchLoaded) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state is SearchError) {
-          return const Center(
-              child: Text('Бүтээгдэхүүний мэдээлэл олдсонгүй.'));
-        } else if (state is SearchLoaded) {
-          return GridView.builder(
-            controller: _scrollController,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 2 / 3,
-            ),
-            itemCount: state.hasReachedMax
-                ? state.products.length
-                : state.products.length + 1,
-            itemBuilder: (context, index) {
-              if (index >= state.products.length) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              return ProductTile(product: state.products[index]);
-            },
-            padding: const EdgeInsets.all(5.0),
-          );
-        } else {
-          return const Center(child: Text('Мэдээлэл олдсонгүй.'));
-        }
-      },
+    return BlocListener<SearchBloc, SearchState>(
+      listener: _listener,
+      child: BlocBuilder<SearchBloc, SearchState>(
+        builder: (context, state) {
+          if (state is SearchLoaded) {
+            return GridView.builder(
+              controller: _scrollController,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 2 / 3,
+              ),
+              itemCount: state.hasReachedMax
+                  ? state.products.length
+                  : state.products.length + 1,
+              itemBuilder: (context, index) {
+                if (index >= state.products.length) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return ProductTile(product: state.products[index]);
+              },
+              padding: const EdgeInsets.all(5.0),
+            );
+          } else if (state is SearchInitial ||
+              state is SearchLoading && state is! SearchLoaded) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            return Container();
+          }
+        },
+      ),
     );
+  }
+
+  void _listener(BuildContext context, SearchState state) {
+    if (state is SearchError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(state.message)),
+      );
+    }
   }
 
   void _onScroll() {

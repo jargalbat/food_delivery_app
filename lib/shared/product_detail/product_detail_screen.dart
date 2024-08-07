@@ -18,7 +18,7 @@ class ProductDetailScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 10, 8, 8),
               child: Text(
-                product.name ?? 'No Name',
+                product.name ?? '',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
